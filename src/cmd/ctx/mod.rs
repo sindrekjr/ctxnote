@@ -1,0 +1,41 @@
+mod get;
+mod init;
+mod mv;
+mod rm;
+
+use crate::cmd::CmdHandling;
+use clap::Parser;
+
+#[derive(Parser)]
+enum Cmd {
+    Get(get::CtxGetCmd),
+    Init(init::CtxInitCmd),
+    Mv(mv::CtxMvCmd),
+    Rm(rm::CtxRmCmd),
+}
+
+#[derive(Parser)]
+pub struct CtxCmd {
+    name: Option<String>,
+
+    #[clap(subcommand)]
+    subcmd: Option<Cmd>,
+}
+
+impl CmdHandling for CtxCmd {
+    fn handle(&self) -> Result<&str, &str> {
+        if let Some(cmd) = &self.subcmd {
+            match cmd {
+                Cmd::Get(get) => get.handle(),
+                Cmd::Init(init) => init.handle(),
+                Cmd::Mv(mv) => mv.handle(),
+                Cmd::Rm(rm) => rm.handle(),
+            }
+        } else if let Some(name) = &self.name {
+            println!("Swap to context: {}", name);
+            Ok("Ran to completion in CtxCmd")
+        } else {
+            todo!()
+        }
+    }
+}
