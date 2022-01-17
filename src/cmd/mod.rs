@@ -9,6 +9,7 @@ pub trait CmdHandling {
 #[derive(Parser)]
 enum Cmd {
     Ctx(ctx::CtxCmd),
+    Init(ctx::CtxInitCmd),
 }
 
 #[derive(Parser)]
@@ -25,6 +26,7 @@ impl CmdHandling for NoteCmd {
         if let Some(cmd) = &self.cmd {
             match cmd {
                 Cmd::Ctx(ctx) => ctx.handle(),
+                Cmd::Init(init) => init.handle(),
             }
         } else if let Some(entry) = &self.entry {
             Ok(format!("Note ran to completion with entry: {}", entry))

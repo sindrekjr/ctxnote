@@ -1,4 +1,5 @@
 mod cmd;
+mod ctx;
 
 use clap::Parser;
 use cmd::{CmdHandling, NoteCmd};

@@ -3,6 +3,8 @@ mod init;
 mod mv;
 mod rm;
 
+pub use self::init::CtxInitCmd;
+
 use crate::cmd::CmdHandling;
 use clap::Parser;
 
