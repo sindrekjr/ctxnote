@@ -5,7 +5,7 @@ mod rm;
 
 pub use self::init::CtxInitCmd;
 
-use crate::cmd::CmdHandling;
+use crate::CmdHandling;
 use clap::Parser;
 
 #[derive(Parser)]

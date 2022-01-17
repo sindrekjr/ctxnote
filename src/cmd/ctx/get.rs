@@ -1,4 +1,4 @@
-use crate::cmd::CmdHandling;
+use crate::CmdHandling;
 use clap::Parser;
 
 #[derive(Parser)]

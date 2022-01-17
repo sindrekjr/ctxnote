@@ -13,7 +13,7 @@ Nothing is implemented yet; all that follows is intention.
 |   | <entry> [-c <context>]
 |   |- init (alias: note ctx init)
 |   |- get <pattern> [-c <context>]
-|   |- conf [-c <cpmtext>]
+|   |- conf [-c <context>]
 |   |   |- get <key>
 |   |   |- set <key> <val>
 |   |- ctx

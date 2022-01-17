@@ -27,6 +27,16 @@ impl Context {
     }
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self {
+            id: Uuid::nil(),
+            name: "default".to_string(),
+            path: None,
+        }
+    }
+}
+
 ///
 /// ContextRegistry
 ///

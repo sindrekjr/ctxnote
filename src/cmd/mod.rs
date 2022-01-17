@@ -1,3 +1,4 @@
+mod conf;
 mod ctx;
 
 use clap::Parser;
@@ -8,6 +9,7 @@ pub trait CmdHandling {
 
 #[derive(Parser)]
 enum Cmd {
+    Conf(conf::ConfCmd),
     Ctx(ctx::CtxCmd),
     Init(ctx::CtxInitCmd),
 }
@@ -25,6 +27,7 @@ impl CmdHandling for NoteCmd {
     fn handle(&self) -> Result<String, String> {
         if let Some(cmd) = &self.cmd {
             match cmd {
+                Cmd::Conf(conf) => conf.handle(),
                 Cmd::Ctx(ctx) => ctx.handle(),
                 Cmd::Init(init) => init.handle(),
             }
