@@ -8,7 +8,7 @@ pub struct CtxMvCmd {
 }
 
 impl CmdHandling for CtxMvCmd {
-    fn handle(&self) -> Result<&str, &str> {
-        todo!()
+    fn handle(&self) -> Result<String, String> {
+        Ok(format!("CtxMv ran to completion with: {} -> {}", self.name, self.newname))
     }
 }

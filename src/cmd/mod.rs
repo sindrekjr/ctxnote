@@ -3,7 +3,7 @@ mod ctx;
 use clap::Parser;
 
 pub trait CmdHandling {
-    fn handle(&self) -> Result<&str, &str>;
+    fn handle(&self) -> Result<String, String>;
 }
 
 #[derive(Parser)]
@@ -21,16 +21,15 @@ pub struct NoteCmd {
 }
 
 impl CmdHandling for NoteCmd {
-    fn handle(&self) -> Result<&str, &str> {
+    fn handle(&self) -> Result<String, String> {
         if let Some(cmd) = &self.cmd {
             match cmd {
                 Cmd::Ctx(ctx) => ctx.handle(),
             }
         } else if let Some(entry) = &self.entry {
-            println!("Create entry: {}", entry);
-            Ok("Ran to completion in NoteCmd")
+            Ok(format!("Note ran to completion with entry: {}", entry))
         } else {
-            todo!()
+            Err("Note ran to completion without entry".to_owned())
         }
     }
 }

@@ -11,7 +11,7 @@ pub struct CtxInitCmd {
 }
 
 impl CmdHandling for CtxInitCmd {
-    fn handle(&self) -> Result<&str, &str> {
-        todo!()
+    fn handle(&self) -> Result<String, String> {
+        Ok("CtxInit ran to completion".to_owned())
     }
 }

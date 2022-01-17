@@ -23,7 +23,7 @@ pub struct CtxCmd {
 }
 
 impl CmdHandling for CtxCmd {
-    fn handle(&self) -> Result<&str, &str> {
+    fn handle(&self) -> Result<String, String> {
         if let Some(cmd) = &self.subcmd {
             match cmd {
                 Cmd::Get(get) => get.handle(),
@@ -32,8 +32,7 @@ impl CmdHandling for CtxCmd {
                 Cmd::Rm(rm) => rm.handle(),
             }
         } else if let Some(name) = &self.name {
-            println!("Swap to context: {}", name);
-            Ok("Ran to completion in CtxCmd")
+            Ok(format!("Ctx ran to completion with context: {}", name))
         } else {
             todo!()
         }

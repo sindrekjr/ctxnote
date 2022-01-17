@@ -7,7 +7,7 @@ pub struct CtxRmCmd {
 }
 
 impl CmdHandling for CtxRmCmd {
-    fn handle(&self) -> Result<&str, &str> {
-        todo!()
+    fn handle(&self) -> Result<String, String> {
+        Ok(format!("CtxRm ran to completion with name: {}", self.name))
     }
 }

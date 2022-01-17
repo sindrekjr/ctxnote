@@ -7,7 +7,7 @@ pub struct CtxGetCmd {
 }
 
 impl CmdHandling for CtxGetCmd {
-    fn handle(&self) -> Result<&str, &str> {
-        todo!()
+    fn handle(&self) -> Result<String, String> {
+        Ok("CtxGet ran to completion".to_owned())
     }
 }
