@@ -21,12 +21,12 @@ pub struct CtxCmd {
     name: Option<String>,
 
     #[clap(subcommand)]
-    subcmd: Option<Cmd>,
+    cmd: Option<Cmd>,
 }
 
 impl CmdHandling for CtxCmd {
     fn handle(&self) -> Result<String, String> {
-        if let Some(cmd) = &self.subcmd {
+        if let Some(cmd) = &self.cmd {
             match cmd {
                 Cmd::Get(get) => get.handle(),
                 Cmd::Init(init) => init.handle(),

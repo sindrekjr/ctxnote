@@ -13,12 +13,12 @@ enum Cmd {
 #[derive(Parser)]
 pub struct ConfCmd {
     #[clap(subcommand)]
-    subcmd: Cmd,
+    cmd: Cmd,
 }
 
 impl CmdHandling for ConfCmd {
     fn handle(&self) -> Result<String, String> {
-        match &self.subcmd {
+        match &self.cmd {
             Cmd::Get(get) => get.handle(),
             Cmd::Set(set) => set.handle(),
         }

@@ -1,5 +1,6 @@
 mod conf;
 mod ctx;
+mod put;
 
 use clap::Parser;
 
@@ -9,6 +10,7 @@ pub trait CmdHandling {
 
 #[derive(Parser)]
 enum Cmd {
+    Put(put::PutCmd),
     Conf(conf::ConfCmd),
     Ctx(ctx::CtxCmd),
     Init(ctx::CtxInitCmd),
@@ -17,24 +19,17 @@ enum Cmd {
 #[derive(Parser)]
 #[clap(name = "ctxnote", version)]
 pub struct NoteCmd {
-    entry: Option<String>,
-
     #[clap(subcommand)]
-    cmd: Option<Cmd>,
+    cmd: Cmd,
 }
 
 impl CmdHandling for NoteCmd {
     fn handle(&self) -> Result<String, String> {
-        if let Some(cmd) = &self.cmd {
-            match cmd {
-                Cmd::Conf(conf) => conf.handle(),
-                Cmd::Ctx(ctx) => ctx.handle(),
-                Cmd::Init(init) => init.handle(),
-            }
-        } else if let Some(entry) = &self.entry {
-            Ok(format!("Note ran to completion with entry: {}", entry))
-        } else {
-            Err("Note ran to completion without entry".to_owned())
+        match &self.cmd {
+            Cmd::Put(put) => put.handle(),
+            Cmd::Conf(conf) => conf.handle(),
+            Cmd::Ctx(ctx) => ctx.handle(),
+            Cmd::Init(init) => init.handle(),
         }
     }
 }
