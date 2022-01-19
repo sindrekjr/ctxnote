@@ -1,6 +1,6 @@
+mod add;
 mod conf;
 mod ctx;
-mod put;
 
 use clap::Parser;
 
@@ -10,7 +10,7 @@ pub trait CmdHandling {
 
 #[derive(Parser)]
 enum Cmd {
-    Put(put::PutCmd),
+    Add(add::AddCmd),
     Conf(conf::ConfCmd),
     Ctx(ctx::CtxCmd),
     Init(ctx::CtxInitCmd),
@@ -26,7 +26,7 @@ pub struct NoteCmd {
 impl CmdHandling for NoteCmd {
     fn handle(&self) -> Result<String, String> {
         match &self.cmd {
-            Cmd::Put(put) => put.handle(),
+            Cmd::Add(add) => add.handle(),
             Cmd::Conf(conf) => conf.handle(),
             Cmd::Ctx(ctx) => ctx.handle(),
             Cmd::Init(init) => init.handle(),
