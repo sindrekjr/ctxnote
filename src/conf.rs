@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    pub usr: User,
-    pub ctx: Context,
+    pub user: User,
+    pub context: Context,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -22,8 +22,8 @@ impl Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            usr: User::default(),
-            ctx: Context::default(),
+            user: User::default(),
+            context: Context::default(),
         }
     }
 }
