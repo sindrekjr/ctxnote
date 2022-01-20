@@ -22,7 +22,7 @@ impl CmdHandling for CtxInitCmd {
         };
 
         if self.bind {
-            ctx.bind(std::env::current_dir().unwrap());
+            ctx.bind(&std::env::current_dir().unwrap());
         }
 
         Ok(format!(
