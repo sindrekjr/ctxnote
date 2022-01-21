@@ -14,14 +14,8 @@ impl Note {
         let config = Config::get();
 
         Self {
-            author: match config.user.name {
-                Some(name) => name,
-                None => String::from("user"),
-            },
-            email: match config.user.email {
-                Some(email) => email,
-                None => String::from(""),
-            },
+            author: config.username,
+            email: config.email,
             time: Utc::now(),
             text,
         }
