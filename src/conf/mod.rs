@@ -1,12 +1,12 @@
 mod data;
-mod user;
+mod usr;
 
 use crate::ctx::Context;
 use data::DataConfig;
 use directories::UserDirs;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use user::UserConfig;
+use usr::UserConfig;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
@@ -19,7 +19,7 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn get_user_config() -> Result<Self, String> {
+    pub fn get_usr_config() -> Result<Self, String> {
         match std::fs::read_to_string(Self::path()) {
             Err(why) => Err(why.to_string()),
             Ok(config_str) => match toml::from_str(&config_str) {

@@ -8,7 +8,7 @@ use cmd::{CmdHandling, NoteCmd};
 use conf::Config;
 
 fn main() {
-    let config = match Config::get_user_config() {
+    let config = match Config::get_usr_config() {
         Ok(config) => config,
         Err(why) => {
             println!("error when reading user config: {}", why);
