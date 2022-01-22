@@ -1,6 +1,8 @@
 mod data;
 mod usr;
 
+pub use data::Storage;
+
 use crate::ctx::Context;
 use data::DataConfig;
 use directories::UserDirs;
