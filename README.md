@@ -9,11 +9,11 @@ Nothing is implemented yet; all that follows is intention.
 ## CLI Structure
 
 ```
-|- note
-|   | <entry> [-c <context>]
+|- note [-c <context>]
+|   |- add <entry>
+|   |- get <pattern>
 |   |- init (alias: note ctx init)
-|   |- get <pattern> [-c <context>]
-|   |- conf [-c <context>]
+|   |- conf
 |   |   |- get <key>
 |   |   |- set <key> <val>
 |   |- ctx
@@ -23,3 +23,35 @@ Nothing is implemented yet; all that follows is intention.
 |   |   |- rm <name>
 |   |   |- mv <name> <newname>
 ```
+
+## Usage
+
+### Options
+
+#### `-c` `--context`
+Sets context inline.
+
+### `note add`
+```
+note add <entry>
+```
+Adds a note entry to the current context.
+
+<details>
+  <summary>Examples</summary>
+
+  ```
+  $ note add "this is an example entry"
+  [default] added entry: this is an example entry
+  ```
+  ```
+  $ note add "this is an example entry in another context" -c examples
+  [examples] added entry: this is an example entry in another context
+  ```
+</details>
+
+### `note get`
+```
+note get <pattern>
+```
+Gets all entries that correspond to the given pattern.
