@@ -40,8 +40,7 @@ impl CmdHandling for AddCmd {
         match writeln!(file, "{}", note.to_str()) {
             Ok(_) => Ok(format!(
                 "[{}] added entry: {}",
-                config.context.name,
-                self.entry
+                config.context.name, self.entry
             )),
             Err(why) => return Err(why.to_string()),
         }

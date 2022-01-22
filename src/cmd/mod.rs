@@ -1,6 +1,7 @@
 mod add;
 mod conf;
 mod ctx;
+mod get;
 
 use crate::Config;
 use clap::Parser;
@@ -12,6 +13,7 @@ pub trait CmdHandling {
 #[derive(Parser)]
 enum Cmd {
     Add(add::AddCmd),
+    Get(get::GetCmd),
     Conf(conf::ConfCmd),
     Ctx(ctx::CtxCmd),
     Init(ctx::CtxInitCmd),
@@ -35,6 +37,7 @@ impl CmdHandling for NoteCmd {
 
         match &self.cmd {
             Cmd::Add(add) => add.handle(config),
+            Cmd::Get(get) => get.handle(config),
             Cmd::Conf(conf) => conf.handle(config),
             Cmd::Ctx(ctx) => ctx.handle(config),
             Cmd::Init(init) => init.handle(config),
