@@ -3,56 +3,46 @@ mod user;
 
 use crate::ctx::Context;
 use data::DataConfig;
+use directories::UserDirs;
+use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use user::UserConfig;
-use uuid::Uuid;
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    pub username: String,
-    pub email: String,
-    pub context_id: Uuid,
-    pub data_dir: PathBuf,
+    #[serde(default)]
+    pub context: Context,
+    #[serde(default)]
+    pub data: DataConfig,
+    #[serde(default)]
+    pub user: UserConfig,
 }
 
 impl Config {
-    pub fn get() -> Self {
-        let defaults = Self::default();
-        match UserConfig::get() {
-            Ok(user_config) => defaults.merge(user_config),
-            Err(_) => defaults,
+    pub fn get_user_config() -> Result<Self, String> {
+        match std::fs::read_to_string(Self::path()) {
+            Err(why) => Err(why.to_string()),
+            Ok(config_str) => match toml::from_str(&config_str) {
+                Err(why) => Err(why.to_string()),
+                Ok(config) => Ok(config),
+            },
         }
     }
 
-    pub fn merge(mut self, user_config: UserConfig) -> Self {
-        if let Some(user) = &user_config.user {
-            if let Some(name) = &user.name {
-                self.username = name.to_string();
-            };
-            if let Some(email) = &user.email {
-                self.email = email.to_string();
-            }
-        };
-
-        if let Some(ctx) = &user_config.context {
-            self.context_id = ctx.id;
-        }
-
-        if let Some(data) = &user_config.data {
-            self.data_dir = data.dir.to_path_buf();
-        }
-
-        self
+    fn path() -> PathBuf {
+        let mut path = UserDirs::new().unwrap().home_dir().to_path_buf();
+        path.push(".ctxnote");
+        path.push("config");
+        path
     }
 }
 
 impl Default for Config {
     fn default() -> Self {
         Self {
-            username: String::from("user"),
-            email: String::from(""),
-            context_id: Context::default().id,
-            data_dir: DataConfig::default().dir,
+            context: Context::default(),
+            data: DataConfig::default(),
+            user: UserConfig::default(),
         }
     }
 }

@@ -1,4 +1,5 @@
 use crate::CmdHandling;
+use crate::Config;
 use clap::Parser;
 
 #[derive(Parser)]
@@ -8,7 +9,7 @@ pub struct ConfSetCmd {
 }
 
 impl CmdHandling for ConfSetCmd {
-    fn handle(&self) -> Result<String, String> {
+    fn handle(&self, _config: &Config) -> Result<String, String> {
         Ok(format!(
             "ConfSet ran to completion with key {} and val {}",
             self.key, self.val

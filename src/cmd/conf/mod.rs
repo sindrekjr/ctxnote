@@ -2,6 +2,7 @@ mod get;
 mod set;
 
 use crate::CmdHandling;
+use crate::Config;
 use clap::Parser;
 
 #[derive(Parser)]
@@ -17,10 +18,10 @@ pub struct ConfCmd {
 }
 
 impl CmdHandling for ConfCmd {
-    fn handle(&self) -> Result<String, String> {
+    fn handle(&self, config: &Config) -> Result<String, String> {
         match &self.cmd {
-            Cmd::Get(get) => get.handle(),
-            Cmd::Set(set) => set.handle(),
+            Cmd::Get(get) => get.handle(config),
+            Cmd::Set(set) => set.handle(config),
         }
     }
 }

@@ -10,16 +10,25 @@ pub enum Storage {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DataConfig {
+    #[serde(default = "default_storage")]
     pub storage: Storage,
+    #[serde(default = "default_dir")]
     pub dir: PathBuf,
+}
+
+fn default_storage() -> Storage {
+    Storage::Fs
+}
+
+fn default_dir() -> PathBuf {
+    ProjectDirs::from("", "", "ctxnote").unwrap().data_dir().to_path_buf()
 }
 
 impl Default for DataConfig {
     fn default() -> Self {
-        let dirs = ProjectDirs::from("", "", "ctxnote").unwrap();
         Self {
-            storage: Storage::Fs,
-            dir: dirs.data_dir().to_path_buf(),
+            storage: default_storage(),
+            dir: default_dir(),
         }
     }
 }

@@ -1,3 +1,4 @@
+use crate::Config;
 use crate::ctx::Context;
 use crate::CmdHandling;
 use clap::Parser;
@@ -12,7 +13,7 @@ pub struct CtxInitCmd {
 }
 
 impl CmdHandling for CtxInitCmd {
-    fn handle(&self) -> Result<String, String> {
+    fn handle(&self, _config: &Config) -> Result<String, String> {
         let mut ctx = match &self.name {
             Some(name) => Context::new(name.to_string()),
             None => {

@@ -2,10 +2,11 @@ mod add;
 mod conf;
 mod ctx;
 
+use crate::Config;
 use clap::Parser;
 
 pub trait CmdHandling {
-    fn handle(&self) -> Result<String, String>;
+    fn handle(&self, config: &Config) -> Result<String, String>;
 }
 
 #[derive(Parser)]
@@ -19,17 +20,24 @@ enum Cmd {
 #[derive(Parser)]
 #[clap(name = "ctxnote", version)]
 pub struct NoteCmd {
+    #[clap(global = true, short, long)]
+    context: Option<String>,
+
     #[clap(subcommand)]
     cmd: Cmd,
 }
 
 impl CmdHandling for NoteCmd {
-    fn handle(&self) -> Result<String, String> {
+    fn handle(&self, config: &Config) -> Result<String, String> {
+        if let Some(_) = &self.context {
+            todo!()
+        }
+
         match &self.cmd {
-            Cmd::Add(add) => add.handle(),
-            Cmd::Conf(conf) => conf.handle(),
-            Cmd::Ctx(ctx) => ctx.handle(),
-            Cmd::Init(init) => init.handle(),
+            Cmd::Add(add) => add.handle(config),
+            Cmd::Conf(conf) => conf.handle(config),
+            Cmd::Ctx(ctx) => ctx.handle(config),
+            Cmd::Init(init) => init.handle(config),
         }
     }
 }

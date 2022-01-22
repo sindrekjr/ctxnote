@@ -1,4 +1,3 @@
-use crate::conf::Config;
 use chrono::{DateTime, NaiveDateTime, Utc};
 
 #[derive(Debug)]
@@ -10,14 +9,12 @@ pub struct Note {
 }
 
 impl Note {
-    pub fn new(text: String) -> Self {
-        let config = Config::get();
-
+    pub fn new(author: String, email: String, text: String) -> Self {
         Self {
-            author: config.username,
-            email: config.email,
-            time: Utc::now(),
+            author,
+            email,
             text,
+            time: Utc::now(),
         }
     }
 
@@ -63,8 +60,10 @@ mod tests {
 
     #[test]
     fn new_correctly_stores_text() {
+        let author = "Tester";
+        let email = "tester@testers.com";
         let text = "This is a test entry.";
-        let note = Note::new(text.to_string());
+        let note = Note::new(author.to_string(), email.to_string(), text.to_string());
 
         assert_eq!(note.text, text);
     }
@@ -94,6 +93,15 @@ mod tests {
             text: String::from("This is a test entry."),
         };
 
-        assert_eq!(note.to_str(), format!("{} <{}> {} {}", note.author, note.email, note.time.timestamp(), note.text))
+        assert_eq!(
+            note.to_str(),
+            format!(
+                "{} <{}> {} {}",
+                note.author,
+                note.email,
+                note.time.timestamp(),
+                note.text
+            )
+        )
     }
 }

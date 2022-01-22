@@ -1,4 +1,5 @@
 use crate::CmdHandling;
+use crate::Config;
 use clap::Parser;
 
 #[derive(Parser)]
@@ -7,7 +8,7 @@ pub struct CtxRmCmd {
 }
 
 impl CmdHandling for CtxRmCmd {
-    fn handle(&self) -> Result<String, String> {
+    fn handle(&self, _config: &Config) -> Result<String, String> {
         Ok(format!("CtxRm ran to completion with name: {}", self.name))
     }
 }
