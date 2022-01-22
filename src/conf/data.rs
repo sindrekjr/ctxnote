@@ -3,21 +3,20 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase", tag = "type")]
 pub enum Storage {
-    //TODO: Db,
-    Fs,
+    Db { conn: String },
+    Fs { dir: PathBuf },
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DataConfig {
     #[serde(default = "default_storage")]
     pub storage: Storage,
-    #[serde(default = "default_dir")]
-    pub dir: PathBuf,
 }
 
 fn default_storage() -> Storage {
-    Storage::Fs
+    Storage::Fs { dir: default_dir() }
 }
 
 fn default_dir() -> PathBuf {
@@ -28,7 +27,6 @@ impl Default for DataConfig {
     fn default() -> Self {
         Self {
             storage: default_storage(),
-            dir: default_dir(),
         }
     }
 }
