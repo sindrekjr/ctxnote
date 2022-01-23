@@ -52,6 +52,11 @@ impl Note {
 
         format!("{} <{}> {} {}", author, email, timestamp, text)
     }
+
+    pub fn as_output(&self) -> String {
+        let time = self.time.to_rfc2822();
+        format!("* ({}) {} - {}", time, self.text, self.author)
+    }
 }
 
 #[cfg(test)]

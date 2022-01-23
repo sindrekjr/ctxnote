@@ -26,27 +26,10 @@ impl CmdHandling for GetCmd {
             Err(why) => return Err(why.to_string()),
         };
 
-        let entries: Vec<Note> = content.lines().map(Note::from_str).collect();
-        let mut output = String::new();
+        let entries: Vec<String> = content.lines().map(|s| Note::from_str(s).as_output()).collect();
 
-        let mut count = 0;
-        for entry in entries {
-            output.push_str("Author: ");
-            output.push_str(&entry.author);
-            output.push_str("\n");
-
-            output.push_str("Date: ");
-            output.push_str(&entry.time.to_rfc2822());
-            output.push_str("\n\n");
-
-            output.push_str(" - ");
-            output.push_str(&entry.text);
-            output.push_str("\n\n");
-
-            count += 1;
-        }
-
-        output.push_str(&format!("found {} entries", count));
+        let mut output = entries.join("\n");
+        output.push_str(&format!("\n\nfound {} entries", entries.len()));
 
         Ok(output)
     }
