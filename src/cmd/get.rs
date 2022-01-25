@@ -21,12 +21,23 @@ impl CmdHandling for GetCmd {
             return Err(String::from("context does not exist"));
         }
 
+        let pattern = match &self.pattern {
+            Some(pattern) => pattern,
+            None => "",
+        };
+
         let content = match std::fs::read_to_string(path) {
             Ok(content) => content,
             Err(why) => return Err(why.to_string()),
         };
 
-        let entries: Vec<String> = content.lines().map(|s| Note::from_str(s).as_output()).collect();
+        let entries: Vec<String> = content
+            .lines()
+            .filter_map(|s| match s.contains(pattern) {
+                true => Some(Note::from_str(s).as_output()),
+                false => None,
+            })
+            .collect();
 
         let mut output = entries.join("\n");
         output.push_str(&format!("\n\nfound {} entries", entries.len()));
