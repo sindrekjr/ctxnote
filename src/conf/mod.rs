@@ -23,9 +23,9 @@ pub struct Config {
 impl Config {
     pub fn get_usr_config() -> Result<Self, String> {
         match std::fs::read_to_string(Self::path()) {
-            Err(why) => Err(why.to_string()),
-            Ok(config_str) => match toml::from_str(&config_str) {
-                Err(why) => Err(why.to_string()),
+            Err(why_not_read) => Err(why_not_read.to_string()),
+            Ok(string) => match toml::from_str(&string) {
+                Err(why_not_parse) => Err(why_not_parse.to_string()),
                 Ok(config) => Ok(config),
             },
         }

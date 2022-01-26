@@ -1,12 +1,10 @@
-use crate::Config;
 use crate::ctx::Context;
-use crate::CmdHandling;
+use crate::{CmdHandling, Config};
 use clap::Parser;
 
 #[derive(Parser)]
 pub struct CtxInitCmd {
-    #[clap(short, long)]
-    name: Option<String>,
+    name: String,
 
     #[clap(short, long)]
     bind: bool,
@@ -14,21 +12,21 @@ pub struct CtxInitCmd {
 
 impl CmdHandling for CtxInitCmd {
     fn handle(&self, _config: &Config) -> Result<String, String> {
-        let mut ctx = match &self.name {
-            Some(name) => Context::new(name.to_string()),
-            None => {
-                let dir = std::env::current_dir().unwrap();
-                Context::new(dir.file_name().unwrap().to_str().unwrap().to_owned())
-            }
-        };
-
+        let mut ctx = Context::new(self.name.to_string());
         if self.bind {
             ctx.bind(&std::env::current_dir().unwrap());
         }
 
-        Ok(format!(
-            "CtxInit ran to completion with new context: {:?}",
-            ctx
-        ))
+        match ctx.register() {
+            Ok(msg) => Ok(format!(
+                "CtxInit ran to completion with new context: {:?}{}",
+                ctx,
+                match msg {
+                    Some(msg) => format!("\n{}", msg),
+                    None => "".to_string(),
+                }
+            )),
+            Err(why) => Err(why.to_string()),
+        }
     }
 }

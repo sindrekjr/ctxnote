@@ -1,10 +1,10 @@
+mod reg;
+
+use reg::ContextRegistry;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use uuid::Uuid;
 
-///
-/// Context
-///
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Context {
     pub id: Uuid,
@@ -25,6 +25,15 @@ impl Context {
         self.path = Some(path.to_path_buf());
         self
     }
+
+    pub fn register(&self) -> Result<Option<String>, String> {
+        let mut reg = match ContextRegistry::get() {
+            Ok(reg) => reg,
+            Err(_) => ContextRegistry::default(),
+        };
+
+        reg.push(self)
+    }
 }
 
 impl Default for Context {
@@ -37,12 +46,10 @@ impl Default for Context {
     }
 }
 
-///
-/// ContextRegistry
-///
-#[derive(Deserialize, Serialize)]
-pub struct ContextRegistry {
-    pub contexts: Vec<Context>,
+impl PartialEq for Context {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
 }
 
 #[cfg(test)]
@@ -69,5 +76,31 @@ mod tests {
         let mut ctx = Context::new(String::from("Test Context"));
         ctx.bind(&path);
         assert_eq!(ctx.path.unwrap(), path);
+    }
+
+    #[test]
+    fn eq_compares_id() {
+        let id = Context::new(String::from("")).id;
+        let ctx1 = Context {
+            id, 
+            name: String::from("test1"),
+            path: None,
+        };
+        let ctx2 = Context {
+            id, 
+            name: String::from("test2"),
+            path: Some(PathBuf::new()),
+        };
+
+        assert_eq!(ctx1, ctx2);
+    }
+
+    #[test]
+    fn eq_does_not_false_equal() {
+        let ctx1_1 = Context::new(String::from("test1"));
+        let ctx1_2 = Context::new(String::from("test1"));
+        let ctx2 = Context::new(String::from("test2"));
+        assert_ne!(ctx1_1, ctx1_2);
+        assert_ne!(ctx1_1, ctx2);
     }
 }
