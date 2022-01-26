@@ -1,6 +1,6 @@
 mod reg;
 
-use reg::ContextRegistry;
+pub use reg::ContextRegistry;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use uuid::Uuid;
@@ -33,6 +33,18 @@ impl Context {
         };
 
         reg.push(self)
+    }
+
+    pub fn as_output(&self) -> String {
+        format!(
+            "[{}] {}; {}",
+            self.id,
+            self.name,
+            match &self.path {
+                Some(path) => path.to_str().unwrap(),
+                None => "",
+            }
+        )
     }
 }
 
@@ -82,12 +94,12 @@ mod tests {
     fn eq_compares_id() {
         let id = Context::new(String::from("")).id;
         let ctx1 = Context {
-            id, 
+            id,
             name: String::from("test1"),
             path: None,
         };
         let ctx2 = Context {
-            id, 
+            id,
             name: String::from("test2"),
             path: Some(PathBuf::new()),
         };

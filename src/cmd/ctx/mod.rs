@@ -1,5 +1,5 @@
-mod get;
 mod init;
+mod list;
 mod mv;
 mod rm;
 
@@ -11,8 +11,8 @@ use clap::Parser;
 
 #[derive(Parser)]
 enum Cmd {
-    Get(get::CtxGetCmd),
     Init(init::CtxInitCmd),
+    List(list::CtxListCmd),
     Mv(mv::CtxMvCmd),
     Rm(rm::CtxRmCmd),
 }
@@ -29,8 +29,8 @@ impl CmdHandling for CtxCmd {
     fn handle(&self, config: &Config) -> Result<String, String> {
         if let Some(cmd) = &self.cmd {
             match cmd {
-                Cmd::Get(get) => get.handle(config),
                 Cmd::Init(init) => init.handle(config),
+                Cmd::List(list) => list.handle(config),
                 Cmd::Mv(mv) => mv.handle(config),
                 Cmd::Rm(rm) => rm.handle(config),
             }

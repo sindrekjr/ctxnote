@@ -28,6 +28,24 @@ impl ContextRegistry {
         path
     }
 
+    pub fn list(&self, pattern: &Option<String>) -> String {
+        let pattern = match pattern {
+            Some(pattern) => pattern,
+            None => "",
+        };
+
+        let contexts: Vec<String> = self
+            .contexts
+            .iter()
+            .filter_map(|ctx| match ctx.name.contains(pattern) {
+                true => Some(ctx.as_output()),
+                false => None,
+            })
+            .collect();
+
+        contexts.join("\n")
+    }
+
     pub fn push(&mut self, context: &Context) -> Result<Option<String>, String> {
         let mut dup_name = false;
         for ctx in self.contexts.iter() {
