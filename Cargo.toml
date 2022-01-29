@@ -1,5 +1,5 @@
 [package]
-name = "ctxnote"
+name = "note"
 version = "0.1.0"
 authors = ["sindrekjr <sindrekjr@hotmail.com>"]
 description = "A command line tool for taking notes"
