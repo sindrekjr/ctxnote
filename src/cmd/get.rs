@@ -16,9 +16,11 @@ impl CmdHandling for GetCmd {
         };
 
         path.push(&config.context.id.to_string());
-        path.push("note");
         if !path.exists() {
-            return Err(String::from("context does not exist"));
+            match std::fs::create_dir_all(&path) {
+                Ok(_) => println!("created context dir: {}", path.display()),
+                Err(why) => return Err(why.to_string()),
+            };
         }
 
         let pattern = match &self.pattern {
@@ -26,9 +28,10 @@ impl CmdHandling for GetCmd {
             None => "",
         };
 
-        let content = match std::fs::read_to_string(path) {
+        path.push("note");
+        let content = match std::fs::read_to_string(&path) {
             Ok(content) => content,
-            Err(why) => return Err(why.to_string()),
+            Err(_) => String::new(),
         };
 
         let entries: Vec<String> = content

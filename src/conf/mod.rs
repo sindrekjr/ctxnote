@@ -21,13 +21,16 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn get_usr_config() -> Result<Self, String> {
+    pub fn get() -> Self {
         match std::fs::read_to_string(Self::path()) {
-            Err(why_not_read) => Err(why_not_read.to_string()),
-            Ok(string) => match toml::from_str(&string) {
-                Err(why_not_parse) => Err(why_not_parse.to_string()),
-                Ok(config) => Ok(config),
-            },
+            Err(_) => Self::default(),
+            Ok(conf_str) => match toml::from_str(&conf_str) {
+                Err(why_not_parse) => {
+                    println!("Failed to parse user config: {}", why_not_parse);
+                    Self::default()
+                }
+                Ok(conf) => conf,
+            }
         }
     }
 
@@ -36,6 +39,11 @@ impl Config {
         path.push(".ctxnote");
         path.push("config");
         path
+    }
+
+    pub fn with_context(mut self, ctx: Context) -> Self {
+        self.context = ctx;
+        self
     }
 }
 

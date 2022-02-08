@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::PathBuf;
+use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ContextRegistry {
@@ -12,6 +13,7 @@ pub struct ContextRegistry {
 
 impl ContextRegistry {
     pub fn get() -> Result<Self, String> {
+        // TODO: fallback to default
         match std::fs::read_to_string(Self::path()) {
             Err(why_not_read) => Err(why_not_read.to_string()),
             Ok(string) => match toml::from_str(&string) {
@@ -26,6 +28,48 @@ impl ContextRegistry {
         path.push(".ctxnote");
         path.push("contexts");
         path
+    }
+
+    pub fn find(&self, ctx_name: &str) -> Result<Context, String> {
+        if let Ok(id) = Uuid::parse_str(ctx_name) {
+            return self.find_by_id(id);
+        }
+
+        let found: Vec<&Context> = self
+            .contexts
+            .iter()
+            .filter(|ctx| ctx.name == ctx_name)
+            .collect();
+
+        match found.len() {
+            1 => Ok(found[0].clone()),
+            0 => Err(format!("Found no context with name {}", ctx_name)),
+            _ => {
+                let mut output = format!(
+                    "Found {} contexts with name \"{}\". Specify context by id instead.",
+                    found.len(),
+                    ctx_name
+                );
+
+                output.push('\n');
+                output.push_str(
+                    &found
+                        .iter()
+                        .map(|ctx| ctx.as_output())
+                        .collect::<Vec<String>>()
+                        .join("\n"),
+                );
+
+                Err(output)
+            }
+        }
+    }
+
+    pub fn find_by_id(&self, id: Uuid) -> Result<Context, String> {
+        match self.contexts.iter().find(|ctx| ctx.id == id) {
+            Some(ctx) => Ok(ctx.clone()),
+            None => Err(format!("Found no context with id {}", id)),
+        }
     }
 
     pub fn list(&self, pattern: &Option<String>) -> String {

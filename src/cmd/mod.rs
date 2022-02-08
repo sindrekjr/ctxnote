@@ -30,18 +30,34 @@ pub struct NoteCmd {
     cmd: Cmd,
 }
 
-impl CmdHandling for NoteCmd {
-    fn handle(&self, config: &Config) -> Result<String, String> {
-        if let Some(_) = &self.context {
-            todo!()
-        }
+impl NoteCmd {
+    pub fn handle(&self) -> Result<String, String> {
+        let config = match self.parse_config() {
+            Ok(conf) => conf,
+            Err(why) => return Err(why),
+        };
 
         match &self.cmd {
-            Cmd::Add(add) => add.handle(config),
-            Cmd::Get(get) => get.handle(config),
-            Cmd::Conf(conf) => conf.handle(config),
-            Cmd::Ctx(ctx) => ctx.handle(config),
-            Cmd::Init(init) => init.handle(config),
+            Cmd::Add(add) => add.handle(&config),
+            Cmd::Get(get) => get.handle(&config),
+            Cmd::Conf(conf) => conf.handle(&config),
+            Cmd::Ctx(ctx) => ctx.handle(&config),
+            Cmd::Init(init) => init.handle(&config),
+        }
+    }
+
+    fn parse_config(&self) -> Result<Config, String> {
+        let config = Config::get();
+
+        if let Some(ctx_name) = &self.context {
+            let ctx = match ContextRegistry::get().unwrap().find(&ctx_name) {
+                Ok(ctx) => ctx,
+                Err(why) => return Err(why),
+            };
+
+            Ok(config.with_context(ctx))
+        } else {
+            Ok(config)
         }
     }
 }
