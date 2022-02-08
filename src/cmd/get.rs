@@ -18,7 +18,7 @@ impl CmdHandling for GetCmd {
         path.push(&config.context.id.to_string());
         if !path.exists() {
             match std::fs::create_dir_all(&path) {
-                Ok(_) => println!("created context dir: {}", path.display()),
+                Ok(_) => println!("Initialized context: {}", config.context.name),
                 Err(why) => return Err(why.to_string()),
             };
         }
@@ -43,7 +43,7 @@ impl CmdHandling for GetCmd {
             .collect();
 
         let mut output = entries.join("\n");
-        output.push_str(&format!("\n\nfound {} entries", entries.len()));
+        output.push_str(&format!("\n\nFound {} entries", entries.len()));
 
         Ok(output)
     }

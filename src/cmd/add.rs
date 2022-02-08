@@ -20,7 +20,7 @@ impl CmdHandling for AddCmd {
         path.push(&config.context.id.to_string());
         if !path.exists() {
             match std::fs::create_dir_all(&path) {
-                Ok(_) => println!("created context dir: {}", path.display()),
+                Ok(_) => println!("Initialized context: {}", config.context.name),
                 Err(why) => return Err(why.to_string()),
             };
         };
@@ -39,7 +39,7 @@ impl CmdHandling for AddCmd {
 
         match writeln!(file, "{}", note.to_str()) {
             Ok(_) => Ok(format!(
-                "[{}] added entry: {}",
+                "* [{}] {}",
                 config.context.name, self.entry
             )),
             Err(why) => return Err(why.to_string()),
