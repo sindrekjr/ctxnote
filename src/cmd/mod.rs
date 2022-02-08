@@ -50,7 +50,7 @@ impl NoteCmd {
         let config = Config::get();
 
         if let Some(ctx_name) = &self.context {
-            let ctx = match ContextRegistry::get().unwrap().find(&ctx_name) {
+            let ctx = match ContextRegistry::get().find(&ctx_name) {
                 Ok(ctx) => ctx,
                 Err(why) => return Err(why),
             };

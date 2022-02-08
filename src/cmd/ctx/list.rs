@@ -10,11 +10,7 @@ pub struct CtxListCmd {
 
 impl CmdHandling for CtxListCmd {
     fn handle(&self, _config: &Config) -> Result<String, String> {
-        let reg = match ContextRegistry::get() {
-            Ok(reg) => reg,
-            Err(_) => ContextRegistry::default(),
-        };
-
+        let reg = ContextRegistry::get();
         Ok(reg.list(&self.pattern))
     }
 }

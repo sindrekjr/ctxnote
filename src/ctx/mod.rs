@@ -27,17 +27,13 @@ impl Context {
     }
 
     pub fn register(&self) -> Result<Option<String>, String> {
-        let mut reg = match ContextRegistry::get() {
-            Ok(reg) => reg,
-            Err(_) => ContextRegistry::default(),
-        };
-
+        let mut reg = ContextRegistry::get();
         reg.push(self)
     }
 
     pub fn as_output(&self) -> String {
         format!(
-            "[{}] {}; {}",
+            "[{}] {} {}",
             self.id,
             self.name,
             match &self.path {

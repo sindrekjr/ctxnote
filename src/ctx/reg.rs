@@ -12,13 +12,15 @@ pub struct ContextRegistry {
 }
 
 impl ContextRegistry {
-    pub fn get() -> Result<Self, String> {
-        // TODO: fallback to default
+    pub fn get() -> Self {
         match std::fs::read_to_string(Self::path()) {
-            Err(why_not_read) => Err(why_not_read.to_string()),
-            Ok(string) => match toml::from_str(&string) {
-                Err(why_not_parse) => Err(why_not_parse.to_string()),
-                Ok(contexts) => Ok(contexts),
+            Err(_) => Self::default(),
+            Ok(reg_str) => match toml::from_str(&reg_str) {
+                Err(why_not_parse) => {
+                    println!("Failed to parse context registry: {}", why_not_parse);
+                    Self::default()
+                }
+                Ok(reg) => reg,
             },
         }
     }
@@ -91,14 +93,13 @@ impl ContextRegistry {
     }
 
     pub fn push(&mut self, context: &Context) -> Result<Option<String>, String> {
-        let mut dup_name = false;
         for ctx in self.contexts.iter() {
             if ctx == context {
-                return Err(String::from("given context already exists"));
+                return Err(String::from("Context already exists"));
             }
 
             if ctx.name == context.name {
-                dup_name = true;
+                return Err(format!("Context named '{}' already exists.", ctx.name));
             }
         }
 
@@ -110,13 +111,7 @@ impl ContextRegistry {
             Err(why_not_open) => Err(why_not_open.to_string()),
             Ok(mut file) => match file.write_all(reg_str.as_bytes()) {
                 Err(why_not_write) => Err(why_not_write.to_string()),
-                Ok(_) => {
-                    if dup_name {
-                        Ok(Some(String::from("NOTE! Contexts with same name already exist. This is inadvisable as it is likely to lead to confusion.")))
-                    } else {
-                        Ok(None)
-                    }
-                }
+                Ok(_) => Ok(None),
             },
         }
     }
