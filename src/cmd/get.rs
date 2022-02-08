@@ -1,6 +1,6 @@
+use crate::cmd::CmdHandling;
 use crate::conf::{Config, Storage};
 use crate::note::Note;
-use crate::CmdHandling;
 use clap::Parser;
 
 #[derive(Parser)]

@@ -1,5 +1,5 @@
+use crate::cmd::CmdHandling;
 use crate::conf::Config;
-use crate::CmdHandling;
 use clap::Parser;
 
 #[derive(Parser)]

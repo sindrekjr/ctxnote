@@ -3,7 +3,8 @@ mod conf;
 mod ctx;
 mod get;
 
-use crate::Config;
+use crate::ctx::ContextRegistry;
+use crate::conf::Config;
 use clap::Parser;
 
 pub trait CmdHandling {
