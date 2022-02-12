@@ -7,7 +7,7 @@ description = "A command line tool for taking notes"
 readme = "README.md"
 homepage = "https://github.com/sindrekjr/ctxnote"
 repository = "https://github.com/sindrekjr/ctxnote"
-license-file = "LICENSE.md"
+license = "MIT"
 keywords = ["cli"]
 categories = ["command-line-utilities"]
 
