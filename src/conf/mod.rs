@@ -4,20 +4,23 @@ mod usr;
 pub use data::Storage;
 
 use crate::ctx::Context;
+use crate::util::is_default;
 use data::DataConfig;
 use directories::UserDirs;
 use serde::{Deserialize, Serialize};
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::path::PathBuf;
 use usr::UserConfig;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    #[serde(default)]
-    pub context: Context,
-    #[serde(default)]
-    pub data: DataConfig,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub user: UserConfig,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub context: Context,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub data: DataConfig,
 }
 
 impl Config {
@@ -30,7 +33,7 @@ impl Config {
                     Self::default()
                 }
                 Ok(conf) => conf,
-            }
+            },
         }
     }
 
@@ -44,6 +47,24 @@ impl Config {
     pub fn with_context(mut self, ctx: Context) -> Self {
         self.context = ctx;
         self
+    }
+
+    pub fn write(&self) -> Result<(), String> {
+        let conf_str = toml::to_string(&self).unwrap();
+
+        let path = Self::path();
+        match OpenOptions::new()
+            .create(true)
+            .truncate(true)
+            .write(true)
+            .open(path)
+        {
+            Err(why_not_open) => Err(why_not_open.to_string()),
+            Ok(mut file) => match file.write_all(conf_str.as_bytes()) {
+                Err(why_not_write) => Err(why_not_write.to_string()),
+                Ok(_) => Ok(()),
+            },
+        }
     }
 }
 

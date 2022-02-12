@@ -2,6 +2,7 @@ mod cmd;
 mod conf;
 mod ctx;
 mod note;
+mod util;
 
 use clap::Parser;
 use cmd::NoteCmd;

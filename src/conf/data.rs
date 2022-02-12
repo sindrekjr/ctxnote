@@ -2,14 +2,14 @@ use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum Storage {
     Db { conn: String },
     Fs { dir: PathBuf },
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 pub struct DataConfig {
     #[serde(default = "default_storage")]
     pub storage: Storage,
