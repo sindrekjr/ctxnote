@@ -20,7 +20,8 @@ enum Cmd {
 
 #[derive(Parser)]
 pub struct CtxCmd {
-    name: Option<String>,
+    #[clap(help = "Name of context to switch to")]
+    ctx_name: String,
 
     #[clap(subcommand)]
     cmd: Option<Cmd>,
@@ -35,18 +36,16 @@ impl CmdHandling for CtxCmd {
                 Cmd::Mv(mv) => mv.handle(config),
                 Cmd::Rm(rm) => rm.handle(config),
             }
-        } else if let Some(ctx_name) = &self.name {
-            let ctx = match ContextRegistry::get().find(&ctx_name) {
+        } else {
+            let ctx = match ContextRegistry::get().find(&self.ctx_name) {
                 Ok(ctx) => ctx,
                 Err(why) => return Err(why),
             };
 
             match Config::get().with_context(ctx).write() {
                 Err(why) => Err(why),
-                _ => Ok(format!("Switched to context '{}'", ctx_name)),
+                _ => Ok(format!("Switched to context '{}'", &self.ctx_name)),
             }
-        } else {
-            todo!()
         }
     }
 }

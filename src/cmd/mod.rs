@@ -23,7 +23,7 @@ enum Cmd {
 #[derive(Parser)]
 #[clap(name = "ctxnote", version)]
 pub struct NoteCmd {
-    #[clap(global = true, short, long)]
+    #[clap(global = true, short, long, help = "Set inline context by name")]
     context: Option<String>,
 
     #[clap(subcommand)]
