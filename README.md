@@ -4,7 +4,7 @@ The mind is a mess. Get your thoughts into contexts!
 
 This is a simple command line tool for taking down notes as they come while working on the command line, without the hassle of having to switch out of your flow. And most importantly, easily put notes into appropriate contexts.
 
-Nothing is implemented yet; all that follows is intention.
+⚠️ WIP. Everything that follows is intention and may not be implemented yet.
 
 ## CLI Structure
 
