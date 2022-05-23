@@ -1,6 +1,5 @@
 mod cmd;
-mod conf;
-mod ctx;
+mod io;
 mod note;
 mod util;
 

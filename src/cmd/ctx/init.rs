@@ -1,6 +1,6 @@
 use crate::cmd::CmdHandling;
-use crate::conf::Config;
-use crate::ctx::Context;
+use crate::io::conf::Config;
+use crate::io::ctx::Context;
 use clap::Parser;
 
 #[derive(Parser)]

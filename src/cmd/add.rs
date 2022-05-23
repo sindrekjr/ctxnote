@@ -1,5 +1,5 @@
 use crate::cmd::CmdHandling;
-use crate::conf::{Config, Storage};
+use crate::io::conf::{Config, Storage};
 use crate::note::Note;
 use clap::Parser;
 use std::fs::OpenOptions;
@@ -38,10 +38,7 @@ impl CmdHandling for AddCmd {
         );
 
         match writeln!(file, "{}", note.to_str()) {
-            Ok(_) => Ok(format!(
-                "* [{}] {}",
-                config.context.name, self.entry
-            )),
+            Ok(_) => Ok(format!("* [{}] {}", config.context.name, self.entry)),
             Err(why) => return Err(why.to_string()),
         }
     }

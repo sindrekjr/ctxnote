@@ -2,7 +2,7 @@ mod get;
 mod set;
 
 use crate::cmd::CmdHandling;
-use crate::conf::Config;
+use crate::io::conf::Config;
 use clap::Parser;
 
 #[derive(Parser)]
