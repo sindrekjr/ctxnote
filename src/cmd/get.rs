@@ -37,7 +37,7 @@ impl CmdHandling for GetCmd {
         let entries: Vec<String> = content
             .lines()
             .filter_map(|s| match s.contains(pattern) {
-                true => Some(Note::from_str(s).as_output()),
+                true => Note::from_storage_string(s).map(|note| format!("{}", note)),
                 false => None,
             })
             .collect();

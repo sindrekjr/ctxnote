@@ -37,7 +37,7 @@ impl CmdHandling for AddCmd {
             self.entry.to_owned(),
         );
 
-        match writeln!(file, "{}", note.to_str()) {
+        match writeln!(file, "{}", note.to_storage_string()) {
             Ok(_) => Ok(format!("* [{}] {}", config.context.name, self.entry)),
             Err(why) => return Err(why.to_string()),
         }

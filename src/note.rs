@@ -1,4 +1,7 @@
 use chrono::{DateTime, NaiveDateTime, Utc};
+use std::collections::hash_map::DefaultHasher;
+use std::fmt;
+use std::hash::{Hash, Hasher};
 
 #[derive(Debug)]
 pub struct Note {
@@ -10,103 +13,63 @@ pub struct Note {
 
 impl Note {
     pub fn new(author: String, email: String, text: String) -> Self {
+        let time = Utc::now();
+
         Self {
             author,
             email,
             text,
-            time: Utc::now(),
+            time,
         }
     }
 
-    pub fn from_str(entry_str: &str) -> Self {
-        let mut chars = entry_str.chars();
-        let author: String = chars.by_ref().take_while(|&c| c != '<').collect();
-        let email: String = chars.by_ref().take_while(|&c| c != '>').collect();
-        let timestamp: i64 = chars
-            .by_ref()
-            .skip(1)
-            .take_while(|&c| c != ' ')
-            .collect::<String>()
-            .parse()
-            .unwrap();
-        let text: String = chars.collect();
+    pub fn id(&self) -> u64 {
+        let mut hasher = DefaultHasher::new();
+        self.hash(&mut hasher);
+        hasher.finish()
+    }
+}
 
-        let author = author.trim().to_owned();
-        let time = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(timestamp, 0), Utc);
+impl Note {
+    pub fn from_storage_string(storage_str: &str) -> Option<Self> {
+        let parts = storage_str.trim().split('§').collect::<Vec<&str>>();
 
-        Self {
+        if parts.len() != 5 {
+            return None;
+        }
+
+        let author = parts[1].to_owned();
+        let email = parts[2].to_owned();
+        let time = DateTime::<Utc>::from_utc(
+            NaiveDateTime::from_timestamp(parts[3].parse().ok()?, 0),
+            Utc,
+        );
+        let text = parts[4].to_owned();
+
+        Some(Self {
             author,
             email,
             time,
             text,
-        }
+        })
     }
 
-    pub fn to_str(&self) -> String {
-        let author = &self.author;
-        let email = &self.email;
-
-        let timestamp = self.time.timestamp();
-
-        let text = &self.text;
-
-        format!("{} <{}> {} {}", author, email, timestamp, text)
-    }
-
-    pub fn as_output(&self) -> String {
-        let time = self.time.to_rfc2822();
-        format!("* ({}) {} - {}", time, self.text, self.author)
+    pub fn to_storage_string(&self) -> String {
+        let time = self.time.timestamp();
+        format!("{}§{}§{}§{}§{}", self.id(), self.author, self.email, time, self.text)
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn new_correctly_stores_text() {
-        let author = "Tester";
-        let email = "tester@testers.com";
-        let text = "This is a test entry.";
-        let note = Note::new(author.to_string(), email.to_string(), text.to_string());
-
-        assert_eq!(note.text, text);
+impl Hash for Note {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.author.hash(state);
+        self.time.hash(state);
+        self.text.hash(state);
     }
+}
 
-    #[test]
-    fn from_str_correctly_deserialize_string() {
-        let author = "Tester";
-        let email = "tester@testers.com";
-        let timestamp = Utc::now().timestamp();
-        let text = "This is a test entry.";
-
-        let entry_str = format!("{} <{}> {} {}", author, email, timestamp, text);
-        let parsed_note = Note::from_str(&entry_str);
-
-        assert_eq!(parsed_note.author, author);
-        assert_eq!(parsed_note.email, email);
-        assert_eq!(parsed_note.time.timestamp(), timestamp);
-        assert_eq!(parsed_note.text, text);
-    }
-
-    #[test]
-    fn to_str_correctly_serialize_str() {
-        let note = Note {
-            author: String::from("Tester"),
-            email: String::from("tester@testers.com"),
-            time: Utc::now(),
-            text: String::from("This is a test entry."),
-        };
-
-        assert_eq!(
-            note.to_str(),
-            format!(
-                "{} <{}> {} {}",
-                note.author,
-                note.email,
-                note.time.timestamp(),
-                note.text
-            )
-        )
+impl fmt::Display for Note {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "* {} ({}) {} - {}", self.id(), self.time, self.text, self.author,)
     }
 }
